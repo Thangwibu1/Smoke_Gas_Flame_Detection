@@ -15,12 +15,13 @@ char pass[] = "0827110100";
 int LED = 2;
 int Sensor = 32;
 int Flame = 33;
+int HumanDetected = 23;
 BlynkTimer timer;
 
 void sendSensor() {
   int sensorValue = analogRead(Sensor);
   int flameValue = analogRead(Flame);
-  
+  int humanDetected = digitalRead(HumanDetected);
   Serial.print("Sensor Value: ");
   Serial.println(sensorValue);
   Serial.print("Flame Value: ");
@@ -33,11 +34,22 @@ void sendSensor() {
     Blynk.virtualWrite(V0, HIGH);
     digitalWrite(LED, HIGH);
     Blynk.logEvent("Warning: Sensor or Flame Detected!");
+    if (humanDetected == HIGH) {
+      Serial.println("Human Detected: Sending Alert!");
+    } else {
+      Serial.println("No Human Detected: Sending Alert!");
+    }
+    
   } else {
     digitalWrite(LED, LOW);
     Serial.println("No Warning: Sensor and Flame Normal.");
     Blynk.virtualWrite(V0, LOW);
     Blynk.logEvent("No Warning: Sensor and Flame Normal.");
+    if (humanDetected == HIGH) {
+      Serial.println("Human Detected: Sending Alert!");
+    } else {
+      Serial.println("No Human Detected: Sending Alert!");
+    }
   }
 }
 
